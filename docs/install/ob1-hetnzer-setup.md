@@ -8,6 +8,10 @@ title: "OB1 Hetnzer Setup"
 This is a scratch setup flow for running OpenClaw in Docker on a Hetzner-style
 VPS, then managing it from the host with an `oc` shell helper.
 
+This flow assumes you access the Control UI through an SSH tunnel, so keep the
+gateway bind on loopback. If you later switch to a non-loopback bind, you must
+also configure `gateway.controlUi.allowedOrigins`.
+
 ## Before the first startup
 
 Before the initial `docker compose build`, check whether the VPS has swap. On
@@ -17,6 +21,12 @@ If swap is missing, follow [Swap File to Prevent OOM During Docker Builds](/swap
 first, then come back here.
 
 ## Build and launch
+
+Before launch, make sure `.env` contains:
+
+```bash
+OPENCLAW_GATEWAY_BIND=loopback
+```
 
 Run from the repo root:
 
@@ -34,7 +44,7 @@ container:
 cat >> ~/.bashrc <<'EOF'
 oc() {
   (
-    cd /path/to/openclaw || exit 1
+    cd /root/openclaw || exit 1
     docker compose exec openclaw-gateway openclaw "$@"
   )
 }
@@ -43,7 +53,7 @@ EOF
 source ~/.bashrc
 ```
 
-Replace `/path/to/openclaw` with your repo path on the VPS.
+If your clone lives somewhere else, change `/root/openclaw` to match.
 
 ## Verify the gateway
 
@@ -54,7 +64,7 @@ docker compose logs -f openclaw-gateway
 You want to see:
 
 ```text
-[gateway] listening on ws://0.0.0.0:18789
+[gateway] listening on ws://127.0.0.1:18789
 ```
 
 ## Open the Control UI from your laptop

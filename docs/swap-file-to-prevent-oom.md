@@ -15,7 +15,7 @@ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command was killed with SIGKILL (Forced term
 
 ## Fix: Add Swap
 
-Create a 4GB swap file (adjust size for your host — 4GB is fine for 8GB RAM):
+Create a 4GB swap file (adjust size for your host; on a 4GB RAM VPS, 4GB swap is a reasonable default):
 
 ```bash
 sudo fallocate -l 4G /swapfile
