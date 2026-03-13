@@ -110,8 +110,10 @@ oc channels status
 oc dashboard --no-open
 ```
 
-docker compose build --no-cache
+<!-- docker compose build --no-cache -->
 docker compose up -d --force-recreate
+
+DOCKER_BUILDKIT=1 docker compose build
 
 Sample Baseline Config File:
 {
