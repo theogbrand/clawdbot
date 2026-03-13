@@ -103,7 +103,12 @@ openclaw devices approve <requestId>
 
 ```bash
 oc --help
+oc setup # adds config files like openclaw.json
+oc configure
 oc devices list
 oc channels status
 oc dashboard --no-open
 ```
+
+docker compose build --no-cache
+docker compose up -d --force-recreate
