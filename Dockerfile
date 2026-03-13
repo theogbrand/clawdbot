@@ -220,6 +220,18 @@ RUN --mount=type=cache,id=openclaw-bookworm-apt-cache,target=/var/cache/apt,shar
         docker-ce-cli docker-compose-plugin; \
     fi
 
+# External skill binaries — baked at build time so they persist across restarts.
+# Architecture detection: maps Docker TARGETARCH (amd64/arm64) to release asset names.
+ARG TARGETARCH
+RUN set -eux; \
+    case "${TARGETARCH:-amd64}" in \
+      amd64) arch=amd64 ;; \
+      arm64) arch=arm64 ;; \
+      *) echo "unsupported arch: $TARGETARCH" >&2; exit 1 ;; \
+    esac; \
+    curl -fsSL "https://github.com/steipete/goplaces/releases/download/v0.3.0/goplaces_0.3.0_linux_${arch}.tar.gz" \
+      | tar -xz -C /usr/local/bin && chmod +x /usr/local/bin/goplaces
+
 # Expose the CLI binary without requiring npm global writes as non-root.
 RUN ln -sf /app/openclaw.mjs /usr/local/bin/openclaw \
  && chmod 755 /app/openclaw.mjs
